@@ -55,7 +55,7 @@
  *
  */
  
-#define CODE_VERSION "0.04"
+#define CODE_VERSION "0.05"
 
 /*
  * How the voltage divider is made:
@@ -99,7 +99,7 @@
 #define LOCK LOW
 
 // Timing used to control the location of the LA
-#define TIME_TO_OPEN 1100
+//#define TIME_TO_OPEN 1100
 #define TIME_TO_CLOSE 950
 #define TIME_TO_RESET_IN 2500
 #define TIME_TO_RESET_OUT TIME_TO_CLOSE
@@ -154,8 +154,8 @@ void LA_reset(void){
 
 void door_open(void) {
     LA_in();
-    delay(TIME_TO_OPEN);
-    LA_stop();
+    //delay(TIME_TO_OPEN);
+    //LA_stop();
     return;  
 }
 
