@@ -100,7 +100,7 @@
 
 // Timing used to control the location of the LA
 //#define TIME_TO_OPEN 1100
-#define TIME_TO_CLOSE 950
+#define TIME_TO_CLOSE 1000
 #define TIME_TO_RESET_IN 2500
 #define TIME_TO_RESET_OUT TIME_TO_CLOSE
 
