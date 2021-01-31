@@ -55,7 +55,7 @@
  *
  */
  
-#define CODE_VERSION "0.05"
+#define CODE_VERSION "0.07"
 
 /*
  * How the voltage divider is made:
@@ -99,9 +99,9 @@
 #define LOCK LOW
 
 // Timing used to control the location of the LA
-//#define TIME_TO_OPEN 1100
+#define TIME_TO_OPEN 3000
 #define TIME_TO_CLOSE 1000
-#define TIME_TO_RESET_IN 2500
+#define TIME_TO_RESET_IN 3000
 #define TIME_TO_RESET_OUT TIME_TO_CLOSE
 
 /*
@@ -152,10 +152,15 @@ void LA_reset(void){
   return;
 }
 
+/*
+ * Intentionally changed this to pull until stopped by the remote control.
+ * The LA gets in odd places due to door tension, if we keep pulling we will
+ * open the door for sure.
+ */
 void door_open(void) {
     LA_in();
-    //delay(TIME_TO_OPEN);
-    //LA_stop();
+    delay(TIME_TO_OPEN);
+    LA_stop();
     return;  
 }
 
@@ -181,7 +186,7 @@ void setup(void) {
   pinMode(LA_CONTROL_2, OUTPUT);
   pinMode(SIGNAL_IN, INPUT);
   // delay really not needed, but gives Arduino time to get stable
-  // just in case.
+  // just i
   delay(10);
   // Now put door LA into known position, since we are just starting up. 
   LA_reset();
@@ -192,15 +197,34 @@ void setup(void) {
 void loop(void) {
   static bool is_door_open = false;
   int signal_state = digitalRead( SIGNAL_IN );
-  
-  if ( (signal_state == UNLOCK) && (is_door_open == false)){
+  /*
+   * Just to cover the states we haveL
+   * Door Locked, signal state == LOCK
+   * Door Locked, signal state == UNLOCK
+   * Door UnLocked, signal state == UNLOCK
+   * Door UnLocked, signal state == LOCK
+   */
+   
+  if ( (signal_state == UNLOCK) && (is_door_open == false) ) {
+    // Door Locked, signal state == UNLOCK, do some stuff (unlock the door) and exit.
     Serial.print("Opening Door lock, Code version: ");
     Serial.println(CODE_VERSION);
     door_open();
     is_door_open = true;
-  } else if ( (signal_state == LOCK) && (is_door_open == true)){
+    return;
+  } else if ( (signal_state == UNLOCK) && (is_door_open == true) ) {
+    // Door UnLocked, signal state == UNLOCK, nothing to do, exit.
+    return;
+  } else if ( (signal_state == LOCK) && (is_door_open == true) ){
+    // Door UnLocked, signal state == LOCK, do some stuff (lock the door) and exit.
     Serial.println("Locking Door");
     door_lock();
     is_door_open = false;
+  } else if ( (signal_state == LOCK) && (is_door_open == false) ) {
+    //  Door Locked, signal state == LOCK, nothing to do, exit.
+    return;
+  } else {
+    // Anyother weird state, can't think of one but!!
+    return;
   }
 }
