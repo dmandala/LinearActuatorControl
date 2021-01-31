@@ -55,7 +55,7 @@
  *
  */
  
-#define CODE_VERSION "0.07"
+#define CODE_VERSION "0.08"
 
 /*
  * How the voltage divider is made:
@@ -101,7 +101,7 @@
 // Timing used to control the location of the LA
 #define TIME_TO_OPEN 3000
 #define TIME_TO_CLOSE 1000
-#define TIME_TO_RESET_IN 3000
+#define TIME_TO_RESET_IN 4000
 #define TIME_TO_RESET_OUT TIME_TO_CLOSE
 
 /*
